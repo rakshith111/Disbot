@@ -1,0 +1,19 @@
+{
+  "name": "disbot",
+  "version": "1.0.0",
+  "description": "testing",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rakshith111/discordbot.git"
+  },
+  "author": "CYB3r D3m0n",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rakshith111/discordbot/issues"
+  },
+  "homepage": "https://github.com/rakshith111/discordbot#readme"
+}
