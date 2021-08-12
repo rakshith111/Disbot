@@ -22,14 +22,13 @@ const voiceCollection = new Collection();
 
 var count = 0
 var name = "Voice #"
-var flag=0
+
 
 client.on('voiceStateUpdate',async(oldstate,newstate)=>{
     const user = await client.users.fetch(newstate.id);
     const member = newstate.guild.member(user);
 
     if(!oldstate.channel && newstate.channel.id === '875331035112566804'){ //voice channel id  ez gotta make a list like this      
-        flag=1
         count = count +1
         console.log(name+count)
         
@@ -38,10 +37,10 @@ client.on('voiceStateUpdate',async(oldstate,newstate)=>{
             parent :newstate.channel.parent,
         });     
         member.voice.setChannel(channel);
-        voiceCollection.set(user.id,channel.id); // map a collection to add users who are moved  proly have to change this method
+        voiceCollection.set(user.id,channel.id); //  creates a map uid : channel id
         console.log(voiceCollection)
     }
-    // else if (!newstate.channel && flag === 1){
+     else if (!newstate.channel ){
     //     flag=0
     //     if(oldstate.channelID===voiceCollection.get(newstate.id) ) 
     //         count=count-1;
