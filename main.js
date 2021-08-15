@@ -20,60 +20,46 @@ client.on('message',async msg=>{
     }
 });
 
-// client.on('voiceStateUpdate',async(oldstate,newstate)=>{
-//     const user = await client.users.fetch(newstate.id);
-//     const member = newstate.guild.member(user);
-
-//     if(!oldstate.channel && newstate.channel.id === '875331035112566804'){ //voice channel id  ez gotta make a list for this       
-//         count = count +1
-//         console.log(name+count)
-        
-//         const channel = await newstate.guild.channels.create(name+count,{
-//             type:'voice',
-//             parent :newstate.channel.parent,
-//         });     
-//         member.voice.setChannel(channel);
-//         console.log(channel.id)
-//         voiceCollection.set(channel.id,user.id); //  creates a map channel id :uid 
-//         console.log(voiceCollection)
-//     }
-//      //else if (!newstate.channel ){
-//     //     flag=0
-//     //     if(oldstate.channelID===voiceCollection.get(newstate.id) ) 
-//     //         count=count-1;
-//     //         console.log("delete count " +count)
-//     //         return oldstate.channel.delete();  //
-//     // }
-// });
 var count = 0
 const mainCategory = '875292443917037610';
 const mainChannel = '875331035112566804';
 const temporaryChannels = new Set();
+var c = new Boolean(false);
+//generates a name storage array 
+function gen(nam){
+    var limit =1 ;
+    names = new Array();
+    names[0]=nam;
+    for(let i=0; i<limit+1 ; i++){
+        names[1+i]=nam+" " +(1+i);
 
+    }
+    //console.log(names)
+    c=false;
+}
+var temp_main=mainChannel;;
 client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
     try {
         const {channelID: oldChannelId, channel: oldChannel} = oldVoiceState;
         const {channelID: newChannelId, guild, member} = newVoiceState;
         var nam = client.channels.cache.get(mainChannel)
-        
-        if (newChannelId === mainChannel) {
-            count = count +1
-           
+        if (c) gen(nam.name); // generates a name arr once
+
+        if (newChannelId === temp_main) {
             const channel = await guild.channels.create(
-                nam.name+count,
+                names[1],
                 {type: 'voice', parent: mainCategory}
             );
             temporaryChannels.add(channel.id);
-            console.log(temporaryChannels)
-            await newVoiceState.setChannel(channel);
+            temp_main=channel.id;
+            names.splice(names.indexOf(names[1]),1)            
+            //await newVoiceState.setChannel(channel); //moves user to new channel
         }
         // Remove empty temporary channels
         if ( temporaryChannels.has(oldChannelId) && oldChannelId !== newChannelId && oldChannel.members.size === 0 ) {
-            // console.log(client.channels.cache.get(oldChannelId))
-            // console.log(client.channels.cache.get(oldChannel.id))
             var n = client.channels.cache.get(oldChannelId);
-
-            count=count-1
+            names.push(n.name)
+            names.sort();
             await oldChannel.delete();
             temporaryChannels.delete(oldChannelId);
         }
