@@ -24,7 +24,7 @@ client.on('message',async msg=>{
                         console.log("worik")
                             if(args[1].length  && args[2].length === 18 ){
                                 dict[`${args[1]}`] =args[2];
-                                fs.readFile('./head.json', 'utf8', (err, fileContents) => {
+                                fs.readFile('./id.json', 'utf8', (err, fileContents) => {
                                     if (err) {
                                       console.error(err)
                                       return
@@ -33,7 +33,7 @@ client.on('message',async msg=>{
                                     var data = JSON.parse(fileContents) // this data contains both the ids till here $use this to count and create new instances
                                     dat=Object.assign(data,dict)
                                     console.log(dat)
-                                    fs.writeFile("head.json", JSON.stringify(dat), err => {
+                                    fs.writeFile("id.json", JSON.stringify(dat), err => {
                                         if (err) throw err; 
                                         console.log(" Written"); // Success
                                     });
