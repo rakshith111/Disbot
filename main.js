@@ -31,8 +31,9 @@ client.on('message',async msg=>{
                                     }
                                     try {   
                                     var data = JSON.parse(fileContents) // this data contains both the ids till here $use this to count and create new instances
-                                    dat=Object.assign(data,dict)
+                                    dat=Object.assign(data,dict) //merging the prev data from file and the data from user
                                     console.log(dat)
+                                    //writing the merged data to the same file
                                     fs.writeFile("id.json", JSON.stringify(dat), err => {
                                         if (err) throw err; 
                                         console.log(" Written"); // Success
@@ -55,12 +56,11 @@ client.on('message',async msg=>{
                     break;
     }
 })
-var count = 0
-const mainCategory = '875292443917037610';
-const mainChannel = '875331035112566804';
-const temporaryChannels = new Set();
-var c = new Boolean(false);
-//generates a name storage array 
+
+
+
+//generates a storage to store the names in an array 
+var c = new Boolean(false); // flag
 function gen(nam){
     names = new Array();
     names[0]=nam;               
@@ -71,17 +71,47 @@ function gen(nam){
     names.sort();
     c=false;
 }
+// check() checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called
+function check(){
+    fs.readFile('./id.json', 'utf8', (err, fileContents) => {
+    if (err) {
+      console.error(err)
+      return
+    }
+    try {   
+    var data = JSON.parse(fileContents) // this data contains both the ids till here $use this to count and create new instances
+    var keys = Object.keys(data);
+    for(var i =0 ; i<keys.length;i++){
+    if(client.channels.cache.get(data[`${keys[i]}`]) === undefined){
+      console.log("key removed")
+      delete data[`${keys[i]}`];   // removes the maincatagory id if id doesnt exists
+    }}
+    console.log(data)
+    fs.writeFile("id.json", JSON.stringify(data), err => {
+        if (err) throw err; 
+        console.log(" Written"); // Success
+        });
+
+    } catch(err) {
+      console.error(err)
+    
+    }
+  })
+  } 
+//these should be a class objs
+const mainCategory = '875292443917037610';
+const mainChannel = '875331035112566804';
+const temporaryChannels = new Set();
 var temp_main=mainChannel;;
 client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
+    check()
     try {
         const {channelID: oldChannelId, channel: oldChannel} = oldVoiceState;
         const {channelID: newChannelId, guild, member} = newVoiceState;
         var nam = client.channels.cache.get(mainChannel)
         if (c) gen(nam.name); // generates a name arr once
         names=orderBy(names)
-        console.log(names)
-        
-        
+
         if (newChannelId === temp_main && names.length >=1  ) {
              
             const channel = await guild.channels.create(
