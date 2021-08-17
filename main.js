@@ -13,7 +13,7 @@ const CsvReadableStream = require('csv-reader');
 client.on('message',async msg=>{
     if(msg.author.bot) return
     if(msg.content === '!set help'){
-         client.channels.cache.get(msg.channel.id).send("Type \n !set <vc's catagory id>  <main vc's id>")
+         client.channels.cache.get(msg.channel.id).send("Type \n !set  <main vc's id>  <vc's catagory id>")
           return
     }
     const args = msg.content.slice(prefix.length).split(/ +/);
@@ -82,9 +82,9 @@ function check(){
     var data = JSON.parse(fileContents) // this data contains both the ids till here $use this to count and create new instances
     var keys = Object.keys(data);
     for(var i =0 ; i<keys.length;i++){
-    if(client.channels.cache.get(data[`${keys[i]}`]) === undefined){
+    if(client.channels.cache.get(keys[i]) === undefined){
       console.log("key removed")
-      delete data[`${keys[i]}`];   // removes the maincatagory id if id doesnt exists
+      delete data[keys[i]];   // removes the maincatagory id if id doesnt exists
     }}
     console.log(data)
     fs.writeFile("id.json", JSON.stringify(data), err => {
@@ -98,6 +98,7 @@ function check(){
     }
   })
   } 
+
 //these should be a class objs
 const mainCategory = '875292443917037610';
 const mainChannel = '875331035112566804';
