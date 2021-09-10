@@ -55,38 +55,12 @@ class LinkedList {
             current = current.next;
         }
     }
-    idexists(channel_name){
-        let current = this.head;
-        console.log(channel_name)
-        try {
-            while (current != null) {
-                if (current.name === channel_name)
-                   return false
-                current = current.next;
-            }
-        } catch (error) {
-            console.log("/"+dat+"/"+"was entered")
-        }        
-    }
-
     returnlist(nameof) {
         let current = this.head;
         try {
             while (current != null) {
                 if (current.name === nameof)
                    return current.nameset
-                current = current.next;
-            }
-        } catch (error) {
-            console.log("/"+dat+"/"+"was entered")
-        }        
-    }
-    returnname(channel_name){
-        let current = this.head;
-        try {
-            while (current != null) {
-                if (current.name === channel_name)
-                   return current.name
                 current = current.next;
             }
         } catch (error) {
@@ -105,21 +79,6 @@ class LinkedList {
             console.log("/"+dat+"/"+"was entered")
             
         }
-    }
-    prnt(){
-        let current=this.head
-        console.log(current)
-    }
-    printlist(dat){
-        let current = this.head
-        while (current != null) {
-            // compare each element of the list
-            // with given element
-            if (current.name === dat)
-              console.log( current.nameset)
-            current = current.next;
-        }
-
     }
 }
 let Check_flag=1;
@@ -231,8 +190,6 @@ client.on('message',async msg=>{
                             client.channels.cache.get(msg.channel.id).send("Enter the correct id's")
                         }
                 }
-                    
-
                     break;
     }
 })
