@@ -1,8 +1,9 @@
-const fs= require('fs')
+
 const Discord = require('discord.js');	
-const { orderBy } = require('natural-orderby')
-const { token } = require('./config.json');
 const client = new Discord.Client() 
+const { token } = require('./config.json');
+const { orderBy } = require('natural-orderby')
+const fs= require('fs')
 
 class Node {
     // constructor
@@ -81,13 +82,13 @@ class LinkedList {
         }
     }
 }
-let Check_flag=1;
-let ll = new LinkedList()
+let Check_flag=1;                                                                       //flag for init data only once need new method 
+let ll = new LinkedList() 
 let id_json_data
-let id_keys=[]
-let id_name=[]
-let activebag_names=[]
-let activebag_id=[]
+let id_keys=[]                                                                          //keys pushed here are from the parent vc and cant be deleted
+let id_name=[]                                                                          //names pushed here are from the parent vc and cant be changed , used to generate the nameset during init 
+let activebag_names=[]                                                                  // this array hold the list of names which are created and is visible to the user
+let activebag_id=[]                                                                     // this array holds the list of names whos id's are valid 
 const prefix="!";
 var dict = {};
 
@@ -95,36 +96,36 @@ var dict = {};
 let init = function(){
     
     if(Check_flag){
-        id_json_data= fs.readFileSync('./id.json', 'utf8',(err, fileContents) => {
-            return fileContents
-      })
-    id_json_data=JSON.parse(id_json_data) //string data is converted to JSON OBJS
-    id_keys=Object.keys(id_json_data) //keys are extractedd
+        id_json_data= fs.readFileSync('./id.json', 'utf8',(err, fileContents) => { return fileContents})
+    id_json_data=JSON.parse(id_json_data)                                               //string data is converted to JSON OBJS
+    id_keys=Object.keys(id_json_data)                                                   //keys are extractedd
     for(let id of id_keys){
         activebag_id.push(id)                                   
-        id_name.push(client.channels.cache.get(id).name)    // assigns the channel names to the id_name list
+        id_name.push(client.channels.cache.get(id).name)                                // assigns the channel names to the id_name list
     }
     for(var i=0;i<id_keys.length;i++)
-         ll.add(id_name[i],id_keys[i],id_json_data[id_keys[i]]) //creates a linked list (of array) to store the names availabe for setting the vc name
-    //ll.prnt() to display the initialized nodes
+         ll.add(id_name[i],id_keys[i],id_json_data[id_keys[i]])                         //creates a linked list (of array) to store the names availabe for setting the vc name
+        //ll.prnt() to display the initialized nodes
 }
 Check_flag=false
 }
-// check() checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data 
+// checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data 
 function check(){
-    let id_json_data_C= fs.readFileSync('./id.json', 'utf8',(err, fileContents) => {
-        return fileContents 
-    })
-id_json_data_C=JSON.parse(id_json_data_C) //string data is converted to JSON OBJS
-id_keys_C=Object.keys(id_json_data_C)
-for(var i of id_keys_C){
-    if(client.channels.cache.get(i) === undefined){
-        console.log(i + "  has been yeeted")
-        delete id_json_data_C[i]
+    let id_json_data_C= fs.readFileSync('./id.json', 'utf8',(err, fileContents) => {return fileContents }) // temp var created to check 
+    id_json_data_C=JSON.parse(id_json_data_C)                                                               //string data is converted to JSON OBJS
+    id_keys_C=Object.keys(id_json_data_C)                                                                    // keys extracted
+    for(var i of id_keys_C){
+        if(client.channels.cache.get(i) === undefined){
+            console.log(i + "  has been yeeted")
+            delete id_json_data_C[i]
+            // add a method to delete a node and update other variables 
+
+        }
     }
-}
+    
+
 console.log(id_json_data_C)
-let id_json_write =fs.writeFileSync("id.json", JSON.stringify(id_json_data_C), err => { });    //writing the merged data to the same file
+let id_json_write =fs.writeFileSync("id.json", JSON.stringify(id_json_data_C), err => { });                 //writing the merged data to the same file
     }
 
 let namedata=[]
@@ -143,19 +144,16 @@ client.on("ready", async () => {
 
 client.on('message',async msg=>{
     if(msg.author.bot) return
-    if(msg.content === '!set help'){
-         client.channels.cache.get(msg.channel.id).send("Type \n !set  <main vc's id>  <vc's catagory id>")
-            ll.prnt()
-          return
-    }
     const args = msg.content.slice(prefix.length).split(/ +/);
-    if(msg.content.startsWith(prefix))
-    console.log(args.length)
+    if(msg.content.startsWith(prefix)){
     switch(args[0]){
-        case 'set': if(args.length === 3){
-
+        case 'set':if(msg.content === '!set help' ||msg.content === '!set'){
+                        client.channels.cache.get(msg.channel.id).send("Type \n !set  <main vc's id>  <vc's catagory id>")
+                        return
+                    }
+                     else if(args.length === 3){
                             if(args[1].length  && args[2].length === 18 ){
-                                console.log(id_keys)
+
                                 if(id_keys.includes(args[1])){
                                     client.channels.cache.get(msg.channel.id).send(client.channels.cache.get(args[1]).name+" already exisis in the  set ")
                                 }
@@ -192,6 +190,7 @@ client.on('message',async msg=>{
                 }
                     break;
     }
+}
 })
 
 client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
@@ -200,17 +199,17 @@ client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
 
     if(activebag_id.includes(newChannelId) ){
         var channel_name_temp=client.channels.cache.get(newChannelId).name.match(/[abcdefghijklmnopqrstuvwxyz]/g).join('')   //gets the name only string ignores numbers                                     
-        pcidd=ll.returnpcid(channel_name_temp)                          //parentcatagoryid
-        namedata=ll.returnlist(channel_name_temp)                      //namedata 
-        namedata=orderBy(namedata)
+        pcidd=ll.returnpcid(channel_name_temp)                                                                               //parentcatagoryid
+        namedata=ll.returnlist(channel_name_temp)                                                                            //namedata 
+        namedata=orderBy(namedata)                                                                                           //sorts it 
         const channel = await guild.channels.create(
             namedata[0],
             {type: 'voice', parent: pcidd}
         );
         activebag_id.push(channel.id)
-        activebag_names.push(namedata[0])
-        namedata.splice(namedata.indexOf(namedata[0]),1)
-        ll.updatedata(channel_name_temp,namedata) 
+        activebag_names.push(namedata[0])                                                                       
+        namedata.splice(namedata.indexOf(namedata[0]),1)                                                                       //removes the created vc name from dataset
+        ll.updatedata(channel_name_temp,namedata)                                                                              //updates the dataset to the node
     }
     //delete vc func
      if ( oldChannelId !== newChannelId && oldChannelId !== newChannelId && oldChannelId !== null  ){
