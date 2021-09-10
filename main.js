@@ -2,7 +2,6 @@ const fs= require('fs')
 const Discord = require('discord.js');	
 const { orderBy } = require('natural-orderby')
 const { token } = require('./config.json');
-const { inherits } = require('util');
 const client = new Discord.Client() 
 
 class Node {
@@ -47,29 +46,6 @@ class LinkedList {
         }
         this.size++;
         console.log('NODE '+ element+" was created")
-    }
-    useradd(vcid,pvid){
-        var vcid_name=client.channels.cache.get(vcid).name
-        let node = new Node(vcid_name,vcid,pvid);
-        // to store current node
-        let current;
-        // if list is Empty add the
-        // element and make it head
-        if (this.head == null)
-            this.head = node;
-        else {
-            current = this.head;
-            // iterate to the end of the
-            // list
-            while (current.next) {
-                current = current.next;
-            }
-            // add node
-            current.next = node;
-        }
-        this.size++;
-        console.log('NODE '+ vcid_name+" was created")
-    
     }
     returnpcid(name){
         let current = this.head;
@@ -163,20 +139,15 @@ let init = function(){
         id_json_data= fs.readFileSync('./id.json', 'utf8',(err, fileContents) => {
             return fileContents
       })
-    console.log("generating data")
     id_json_data=JSON.parse(id_json_data) //string data is converted to JSON OBJS
-
     id_keys=Object.keys(id_json_data) //keys are extractedd
-    console.log(id_keys)
-    console.log(id_json_data)
-
     for(let id of id_keys){
         activebag_id.push(id)                                   
         id_name.push(client.channels.cache.get(id).name)    // assigns the channel names to the id_name list
     }
     for(var i=0;i<id_keys.length;i++)
          ll.add(id_name[i],id_keys[i],id_json_data[id_keys[i]]) //creates a linked list (of array) to store the names availabe for setting the vc name
-    ll.prnt()
+    //ll.prnt() to display the initialized nodes
 }
 Check_flag=false
 }
@@ -210,6 +181,7 @@ client.on("ready", async () => {
         status: 'dnd'
     })
 })
+
 client.on('message',async msg=>{
     if(msg.author.bot) return
     if(msg.content === '!set help'){
@@ -250,7 +222,7 @@ client.on('message',async msg=>{
                                     activebag_id.push(args[1])                                //adds it to the list of ids which are supposed to be cloned
                                     id_name.push(client.channels.cache.get(args[1]).name)   //adds name to the permanent non deletable id list
                                     id_keys.push(args[1])
-                                    ll.useradd(args[1],args[2])                                 //adds a new node to the pre existing one or creates one 
+                                    ll.add(client.channels.cache.get(args[1]).name,args[1],args[2])                                 //adds a new node to the pre existing one or creates one 
                                 }
                             else
                             client.channels.cache.get(msg.channel.id).send("Wrong id")
@@ -268,13 +240,8 @@ client.on('message',async msg=>{
 client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
     const {channelID: oldChannelId, channel: oldChannel} = oldVoiceState;
     const {channelID: newChannelId, guild } = newVoiceState;
-    console.log("activebagids "+   activebag_id)
-    // console.log(id_keys)
-    // ll.prnt()
-    // create vc function 
-    console.log(newChannelId)
-    if(activebag_id.includes(newChannelId) ){
 
+    if(activebag_id.includes(newChannelId) ){
         var channel_name_temp=client.channels.cache.get(newChannelId).name.match(/[abcdefghijklmnopqrstuvwxyz]/g).join('')   //gets the name only string ignores numbers                                     
         pcidd=ll.returnpcid(channel_name_temp)                          //parentcatagoryid
         namedata=ll.returnlist(channel_name_temp)                      //namedata 
@@ -287,15 +254,10 @@ client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
         activebag_names.push(namedata[0])
         namedata.splice(namedata.indexOf(namedata[0]),1)
         ll.updatedata(channel_name_temp,namedata) 
-        console.log("current data availabe for naming \n")
-        namedata=ll.returnlist(channel_name_temp) 
-        console.log(namedata)  
-        console.log("----------------------------------------------------------------------")  
     }
     //delete vc func
      if ( oldChannelId !== newChannelId && oldChannelId !== newChannelId && oldChannelId !== null  ){
         if(oldChannel.members.size === 0 && !id_keys.includes(oldChannelId) && activebag_id.includes(oldChannelId)){
-            console.log('in del call')
             var channel_name_temp=client.channels.cache.get(oldChannelId).name.match(/[abcdefghijklmnopqrstuvwxyz]/g).join('')   
             var channel_name_temp_ins=client.channels.cache.get(oldChannelId).name
             namedata=ll.returnlist(channel_name_temp)
@@ -304,11 +266,6 @@ client.on('voiceStateUpdate', async (oldVoiceState, newVoiceState) => {
             activebag_id.splice(activebag_id.indexOf(oldChannelId),1)
             ll.updatedata(channel_name_temp,namedata) 
             await oldChannel.delete();
-            console.log("channel "+ channel_name_temp_ins+ " is deleted")
-            console.log("name added back\n")
-            namedata=ll.returnlist(channel_name_temp) 
-            console.log(namedata)
-            console.log('***********************************************************************')
         }
 }
 })
