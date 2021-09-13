@@ -138,8 +138,8 @@ client.on("ready", async () => {
   init();
   client.user.setPresence({
     activity: {
-      name: "WITH DEEZ NUTS",
-      type: "PLAYING",
+      name: "YOU",
+      type: "WATCHING",
     },
     status: "dnd",
   });
