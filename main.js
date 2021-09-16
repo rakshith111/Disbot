@@ -106,6 +106,7 @@ let init = function () {
 };
 // checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data
 function check() {
+  console.log("checking");
   let id_json_data_C = fs.readFileSync(
     "./id.json",
     "utf8",
@@ -147,8 +148,8 @@ client.on("ready", async () => {
 
 client.on("message", async (msg) => {
   if (msg.author.bot) return;
-  const args = msg.content.slice(prefix.length).split(/ +/);
   if (msg.content.startsWith(prefix)) {
+    const args = msg.content.slice(prefix.length).split(/ +/);
     switch (args[0]) {
       case "set":
         if (msg.content === "!set help" || msg.content === "!set") {
