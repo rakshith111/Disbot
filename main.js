@@ -7,14 +7,13 @@ const fs = require("fs");
 class Node {
   // constructor
   constructor(element, pvid, pcid) {
-    this.name = element;
+    this.name = element; //name of the vc
     this.parentvoice_id = pvid; //parent voiceid
     this.parentcatagory_id = pcid; //parent catagory id
     this.nameset = []; //nameset contains list of creatable vc names
-    for (let i = 0; i < 21; i++) {
+    for (let i = 1; i < 21; i++) {
       this.nameset.push(element + " " + i);
     }
-    this.nameset.shift();
     this.next = null;
   }
 }
@@ -23,36 +22,32 @@ class LinkedList {
     this.head = null;
     this.size = 0;
   }
-  //add(vc name , vcid, ,catagoryparent id)
+  //add(vc name , vcid, ,catagoryparentid)
   add(element, pvid, pcid) {
-    // function adds a new node
     // creates a new node
     let node = new Node(element, pvid, pcid);
-    // to store current node
     let current;
-    // if list is Empty add the
-    // element and make it head
     if (this.head == null) this.head = node;
     else {
       current = this.head;
-      // iterate to the end of the
-      // list
       while (current.next) {
         current = current.next;
       }
-      // add node
+      // adds node
       current.next = node;
     }
     this.size++;
     console.log("NODE " + element + " was created");
   }
-  returnpcid(name) {
+  //returns the parent catagory id
+  returnpcid(nameof) {
     let current = this.head;
     while (current != null) {
-      if (current.name === name) return current.parentcatagory_id;
+      if (current.name === nameof) return current.parentcatagory_id;
       current = current.next;
     }
   }
+  //function takes the name and returns its nameset
   returnlist(nameof) {
     let current = this.head;
     try {
@@ -64,6 +59,7 @@ class LinkedList {
       console.log("/" + dat + "/" + "was entered");
     }
   }
+  //function takes the name and nameset  and updates its nameset to the latest changes made
   updatedata(name, data) {
     let current = this.head;
     try {
@@ -75,6 +71,11 @@ class LinkedList {
       console.log("/" + dat + "/" + "was entered");
     }
   }
+  //prints all the nodes
+  prnt() {
+    let current = this.head;
+    console.log(current);
+  }
 }
 let Check_flag = 1; //flag for init data only once need new method
 let ll = new LinkedList();
@@ -84,7 +85,7 @@ let id_name = []; //names pushed here are from the parent vc and cant be changed
 let activebag_names = []; // this array hold the list of names which are created and is visible to the user
 let activebag_id = []; // this array holds the list of names whos id's are valid
 const prefix = "!";
-var dict = {};
+var dict = {}; //for reading the ip
 
 //inits data from file  only happens once during startup
 let init = function () {
@@ -103,6 +104,7 @@ let init = function () {
     //ll.prnt() to display the initialized nodes
   }
   Check_flag = false;
+  ll.prnt();
 };
 // checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data
 function check() {
