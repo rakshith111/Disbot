@@ -13,8 +13,15 @@ To show the command help
 <details>
   <summary>HINT: To get the id's </summary>
   <h4>RIGHT CLICK  on the channel whose id you want</h4>
-  ![image](https://user-images.githubusercontent.com/36219488/133630776-eeb3c558-6c6b-4c82-aa26-8d3072b578ba.png)
+    
+  ![image](https://user-images.githubusercontent.com/36219488/133721225-8a3d60b0-8e8e-4c10-b5c9-a2539844a1a9.png)
+    
+    
 </details>
 
 1)Voice channel gets created when two or more users exist in a voice channel <br>
 ![joining](https://user-images.githubusercontent.com/36219488/133721118-9051ed51-a95f-422a-93fc-74ae8efee7d6.gif)
+
+2) Voice channel gets deleted when no user exists in the voice channel <br>
+![leave](https://user-images.githubusercontent.com/36219488/133721612-8fcb6753-c544-421f-b3e8-6a0843d05725.gif)
+
