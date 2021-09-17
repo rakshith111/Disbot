@@ -16,3 +16,5 @@ To show the command help
   ![image](https://user-images.githubusercontent.com/36219488/133630776-eeb3c558-6c6b-4c82-aa26-8d3072b578ba.png)
 </details>
 
+1)Voice channel gets created when two or more users exist in a voice channel <br>
+![joining](https://user-images.githubusercontent.com/36219488/133721118-9051ed51-a95f-422a-93fc-74ae8efee7d6.gif)
