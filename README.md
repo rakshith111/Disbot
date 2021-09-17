@@ -1,8 +1,10 @@
 # Disbot
-# Main features currently availabe 
+#### A multi purpose bot with more features coming soon
 ## Requirements 
 `natural-orderby <=2.0.3` <br>
 `npm install natural-orderby --save`
+# Main features currently availabe 
+
 ### Temporary Voice channel creator 
 
 To show the command help 
