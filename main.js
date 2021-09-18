@@ -73,8 +73,12 @@ class LinkedList {
   }
   //prints all the nodes
   prnt() {
+    console.log(this.size);
     let current = this.head;
-    console.log(current);
+    while (current != null) {
+      console.log(current);
+      current = current.next;
+    }
   }
 }
 let Check_flag = 1; //flag for init data only once need new method
@@ -85,7 +89,7 @@ let id_name = []; //names pushed here are from the parent vc and cant be changed
 let activebag_names = []; // this array hold the list of names which are created and is visible to the user
 let activebag_id = []; // this array holds the list of names whos id's are valid
 const prefix = "!";
-var dict = {}; //for reading the ip
+var dict = {}; //for reading the input
 
 //inits data from file  only happens once during startup
 let init = function () {
@@ -219,7 +223,6 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
 
     if (newChannel.members.size !== 0 && newChannel.members.size === 2) {
       // if newchannel has more than 2 users it creates new vc
-
       if (
         !(
           (oldVoiceState.selfDeaf === true &&
@@ -259,8 +262,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
         if (activebag_id.includes(newChannelId)) {
           var channel_name_temp = client.channels.cache
             .get(newChannelId)
-            .name.match(/[abcdefghijklmnopqrstuvwxyz]/g)
-            .join(""); //gets the name only string ignores numbers
+            .name.replace(/[0-9]/g, ""); //gets the name only string ignores numbers
           pcidd = ll.returnpcid(channel_name_temp); //parentcategoryid
           namedata = ll.returnlist(channel_name_temp); //namedata
           namedata = orderBy(namedata); //sorts it
@@ -285,8 +287,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
     ) {
       var channel_name_temp = client.channels.cache
         .get(oldChannelId)
-        .name.match(/[abcdefghijklmnopqrstuvwxyz]/g)
-        .join("");
+        .name.replace(/[0-9]/g, "");
       var channel_name_temp_ins = client.channels.cache.get(oldChannelId).name;
       namedata = ll.returnlist(channel_name_temp);
       namedata.push(channel_name_temp_ins);
