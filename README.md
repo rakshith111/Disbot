@@ -5,12 +5,12 @@
 `npm install natural-orderby --save`
 # Main features currently availabe 
 
-### Temporary Voice channel creator 
+### 1)Temporary Voice channel creator 
 
 To show the command help 
 `!set help`
 
-    !set  <main vc's id>  <vc's catagory id>
+    !set  <main vc's id>  <vc's category id>
 ![image](https://user-images.githubusercontent.com/36219488/133628844-535387be-0131-445e-bb38-798deecbce76.png)
 <h6><details>
   <summary>HINT: To get the id's </summary>
