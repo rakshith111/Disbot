@@ -9,7 +9,7 @@ class Node {
   constructor(element, pvid, pcid) {
     this.name = element; //name of the vc
     this.parentvoice_id = pvid; //parent voiceid
-    this.parentcatagory_id = pcid; //parent catagory id
+    this.parentcategory_id = pcid; //parent category id
     this.nameset = []; //nameset contains list of creatable vc names
     for (let i = 1; i < 21; i++) {
       this.nameset.push(element + " " + i);
@@ -22,7 +22,7 @@ class LinkedList {
     this.head = null;
     this.size = 0;
   }
-  //add(vc name , vcid, ,catagoryparentid)
+  //add(vc name , vcid, ,categoryparentid)
   add(element, pvid, pcid) {
     // creates a new node
     let node = new Node(element, pvid, pcid);
@@ -39,11 +39,11 @@ class LinkedList {
     this.size++;
     console.log("NODE " + element + " was created");
   }
-  //returns the parent catagory id
+  //returns the parent category id
   returnpcid(nameof) {
     let current = this.head;
     while (current != null) {
-      if (current.name === nameof) return current.parentcatagory_id;
+      if (current.name === nameof) return current.parentcategory_id;
       current = current.next;
     }
   }
@@ -157,7 +157,7 @@ client.on("message", async (msg) => {
         if (msg.content === "!set help" || msg.content === "!set") {
           client.channels.cache
             .get(msg.channel.id)
-            .send("Type \n !set  <main vc's id>  <vc's catagory id>");
+            .send("Type \n !set  <main vc's id>  <vc's category id>");
           return;
         } else if (args.length === 3) {
           if (args[1].length && args[2].length === 18) {
@@ -261,7 +261,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
             .get(newChannelId)
             .name.match(/[abcdefghijklmnopqrstuvwxyz]/g)
             .join(""); //gets the name only string ignores numbers
-          pcidd = ll.returnpcid(channel_name_temp); //parentcatagoryid
+          pcidd = ll.returnpcid(channel_name_temp); //parentcategoryid
           namedata = ll.returnlist(channel_name_temp); //namedata
           namedata = orderBy(namedata); //sorts it
           const channel = await guild.channels.create(namedata[0], {
@@ -277,11 +277,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
     }
   }
   //delete vc func
-  if (
-    oldChannelId !== newChannelId &&
-    oldChannelId !== newChannelId &&
-    oldChannelId !== null
-  ) {
+  if (oldChannelId !== newChannelId && oldChannelId !== null) {
     if (
       oldChannel.members.size === 0 &&
       !id_keys.includes(oldChannelId) &&
