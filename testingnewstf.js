@@ -1,8 +1,7 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const pvtgenny = require("./pvtvcgen.js");
 const { token } = require("./config.json");
-const pvtv = require("./pvtvcgen");
+const pvtvc = require("./pvtvcgen.js");
 const prefix = "!";
 client.on("ready", async () => {
   console.log("ready called");
@@ -27,7 +26,10 @@ client.on("message", async (msg) => {
               "Description: Private Voice Channel Creater \nType \n !create  <user1>  <user2>.....<user 'n'> time(in hrs) Default:30 mins \n Ex !create  @test1  @test2  1.5 "
             );
           return;
+        } else {
+          pvtvc.sendmsg(args, msg.guild);
         }
+        break;
     }
   }
 });
