@@ -298,5 +298,22 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
     }
   }
 });
+//For tracking users up and down time ; need to merge if bot and user are in diff svrs
+// client.on("presenceUpdate", (oldMember, newMember) => {
+//   if (newMember.userID === "UID") {
+//     const d = new Date();
+//     time = d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds();
+//     after = newMember.userID;
+//     console.log(
+//       newMember.afkTimeout +
+//         " " +
+//         client.users.cache.get(after).username +
+//         " " +
+//         newMember.status +
+//         " " +
+//         time
+//     );
+//   }
+// });
 
 client.login(token);
