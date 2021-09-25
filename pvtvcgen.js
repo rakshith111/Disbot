@@ -1,32 +1,31 @@
 const Discord = require("discord.js");
-const { cpuUsage } = require("process");
-async function sendmsg(messageip, guid) {
-  const def_time = 0.5;
+const prefix = "!";
+async function sendmsg(messageip) {
+  const args = messageip.content.slice(prefix.length).split(/ +/);
+  const def_time = 0.5 * 60 * 60 * 1000;
   let alloted_time;
-  let pvtusers = [];
-  if (!parseInt(messageip.at(-1))) alloted_time = def_time; //allots the def time if non is entered
-  alloted_time = parseInt(messageip.at(-1)); //gets the time if mentioned
-  pvtusers = messageip.slice(1, -1); //seperates the users
-  guid.roles.create({
+  if (!parseInt(args.at(-1))) {
+    alloted_time = def_time; //allots the def time if non is entered
+  } else alloted_time = parseInt(args.at(-1)) * 60 * 60 * 1000; //gets the time if mentioned
+  const Role = await messageip.guild.roles.create({
+    // Creating the role.
     data: {
       name: "asd",
-      color: "BLURPLE",
+      color: "RANDOM",
       mentionable: 0,
     },
   });
+  role_id = Role.id;
+  let member = messageip.mentions.members.array();
 
-  console.log(idd);
-  //   const channel = await guild.channels.create("yesss", {
-  //     type: "voice",
-  //     parent: "875333761552777298",
-  //   });
+  for (mem of member) {
+    mem.roles.add(role_id).catch(console.error);
+  }
+
+  // const channel = await guild.channels.create("yesss", {
+  //   type: "voice",
+  //   parent: "875333761552777298",
+  // });
 }
-
-messageip = [
-  "create",
-  "<@!539445876796424192>",
-  "<@!764249448691400704>",
-  "<@!764249448691400704>",
-];
 
 module.exports = { sendmsg };

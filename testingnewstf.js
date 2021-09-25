@@ -27,7 +27,7 @@ client.on("message", async (msg) => {
             );
           return;
         } else {
-          pvtvc.sendmsg(args, msg.guild);
+          pvtvc.sendmsg(msg);
         }
         break;
     }
