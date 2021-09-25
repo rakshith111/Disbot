@@ -14,7 +14,7 @@ To show the command help
 ![image](https://user-images.githubusercontent.com/36219488/133628844-535387be-0131-445e-bb38-798deecbce76.png)
 <h6><details>
   <summary>HINT: To get the id's </summary>
-  <h4>RIGHT CLICK  on the channel whose id you want</h4>
+  <h4>RIGHT CLICK  on the channel , then click on Copy ID</h4>
     
   ![image](https://user-images.githubusercontent.com/36219488/133721225-8a3d60b0-8e8e-4c10-b5c9-a2539844a1a9.png)
     
