@@ -13,6 +13,7 @@ client.on("ready", async () => {
     status: "dnd",
   });
 });
+
 client.on("message", async (msg) => {
   if (msg.author.bot) return;
   if (msg.content.startsWith(prefix)) {
@@ -23,7 +24,7 @@ client.on("message", async (msg) => {
           client.channels.cache
             .get(msg.channel.id)
             .send(
-              "Description: Private Voice Channel Creater \nType \n !create  <user1>  <user2>.....<user 'n'> time(in hrs) Default:30 mins \n Ex !create  @test1  @test2  1.5 "
+              "Description: Private Voice Channel Creater \nType \n !create  <vcname> <user1>  <user2>.....<user 'n'> time(in hrs) Default:30 mins \n Ex !create myvcname @test1  @test2  1.5 "
             );
           return;
         } else {
