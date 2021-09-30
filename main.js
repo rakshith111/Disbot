@@ -91,7 +91,7 @@ let activebag_names = []; // this array hold the list of names which are created
 let activebag_id = []; // this array holds the list of names whos id's are valid
 const prefix = "!";
 var dict = {}; //for reading the input
-
+let svrnames;
 //inits data from file  only happens once during startup
 function init() {
   if (fs.existsSync(path)) {
@@ -100,7 +100,7 @@ function init() {
         return fileContents;
       });
       fileContentsjson = JSON.parse(filereader); //string data is converted to JSON OBJS
-      let svrnames = Object.keys(fileContentsjson); // svr names are extracted
+      svrnames = Object.keys(fileContentsjson); // svr names are extracted
       for (let i of svrnames) {
         //keys are extractedd
         id_keys.push(Object.keys(fileContentsjson[i]["voicegenids"]));
@@ -120,6 +120,7 @@ function init() {
     var init = {
       "bot testing": {
         guildid: "875028803464863784",
+        pvtvc: "",
         voicegenids: {
           "885261078408331345": "875028803464863786",
           "875331035112566804": "875292443917037610",
@@ -134,36 +135,47 @@ function init() {
 }
 // checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data
 function check() {
-  console.log("checking");
-  let id_json_data_C = fs.readFileSync(
-    "./id.json",
+  let fileContentsjson_C = fs.readFileSync(
+    path,
     "utf8",
     (err, fileContents) => {
       return fileContents;
     }
-  ); // temp var created to check
-  id_json_data_C = JSON.parse(id_json_data_C); //string data is converted to JSON OBJS
-  id_keys_C = Object.keys(id_json_data_C); // keys extracted
-  for (var i of id_keys_C) {
-    if (client.channels.cache.get(i) === undefined) {
-      console.log(i + "  has been yeeted");
-      delete id_json_data_C[i];
+  );
+  fileContentsjsoncontents_C = JSON.parse(fileContentsjson_C); //string data is converted to JSON OBJS
+  let svrnames = Object.keys(fileContentsjsoncontents_C);
+
+  for (let i of svrnames) {
+    //keys are extractedd
+    let temp = [];
+    const server = client.guilds.cache.get(
+      fileContentsjsoncontents_C[i]["guildid"]
+    );
+    temp.push(Object.keys(fileContentsjsoncontents_C[i]["voicegenids"]));
+    temp = temp.flat();
+    for (let ids of temp) {
+      if (server.channels.cache.get(ids) === undefined)
+        console.log(i + "  has been yeeted");
+      delete fileContentsjsoncontents_C[i]["voicegenids"][ids];
       // add a method to delete a node and update other variables
     }
   }
-
-  console.log(id_json_data_C);
-  let id_json_write = fs.writeFileSync(
-    "id.json",
-    JSON.stringify(id_json_data_C),
-    (err) => {}
-  ); //writing the merged data to the same file
+  fs.writeFile(
+    path,
+    JSON.stringify(fileContentsjsoncontents_C),
+    function (err) {
+      if (err) throw err;
+      console.log("File is updated.");
+    }
+  );
+  e;
 }
 
 let namedata = [];
 client.on("ready", async () => {
   console.log("ready called");
   init();
+  check();
   client.user.setPresence({
     activity: {
       name: "YOU",
