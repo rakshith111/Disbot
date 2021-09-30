@@ -86,6 +86,7 @@ let Check_flag = 1; //flag for init data only once need new method
 let ll = new LinkedList();
 let fileContentsjson;
 let id_keys = []; //keys pushed here are from the parent vc and cant be deleted
+let all_key_value = {}; // has all the key:value ie vcid:parentid values
 let id_name = []; //names pushed here are from the parent vc and cant be changed , used to generate the nameset during init
 let activebag_names = []; // this array hold the list of names which are created and is visible to the user
 let activebag_id = []; // this array holds the list of names whos id's are valid
@@ -102,8 +103,11 @@ function init() {
       fileContentsjson = JSON.parse(filereader); //string data is converted to JSON OBJS
       svrnames = Object.keys(fileContentsjson); // svr names are extracted
       for (let i of svrnames) {
-        //keys are extractedd
-        id_keys.push(Object.keys(fileContentsjson[i]["voicegenids"]));
+        all_key_value = Object.assign(
+          all_key_value,
+          fileContentsjson[i]["voicegenids"] // raw json vcid : parent id
+        );
+        id_keys.push(Object.keys(fileContentsjson[i]["voicegenids"])); //keys are extractedd
       }
       id_keys = id_keys.flat();
       for (let id of id_keys) {
@@ -111,7 +115,7 @@ function init() {
         id_name.push(client.channels.cache.get(id).name); // assigns the channel names to the id_name list
       }
       for (var i = 0; i < id_keys.length; i++)
-        ll.add(id_name[i], id_keys[i], id_json_data[id_keys[i]]); //creates a linked list (of array) to store the names availabe for setting the vc name
+        ll.add(id_name[i], id_keys[i], all_key_value[id_keys[i]]); //creates a linked list (of array) to store the names availabe for setting the vc name
       //ll.prnt() to display the initialized nodes
     }
     Check_flag = false;
@@ -142,33 +146,27 @@ function check() {
       return fileContents;
     }
   );
-  fileContentsjsoncontents_C = JSON.parse(fileContentsjson_C); //string data is converted to JSON OBJS
-  let svrnames = Object.keys(fileContentsjsoncontents_C);
+  fileContentsjson_C = JSON.parse(fileContentsjson_C); //string data is converted to JSON OBJS
+  svrnames = Object.keys(fileContentsjson_C);
 
   for (let i of svrnames) {
     //keys are extractedd
     let temp = [];
-    const server = client.guilds.cache.get(
-      fileContentsjsoncontents_C[i]["guildid"]
-    );
-    temp.push(Object.keys(fileContentsjsoncontents_C[i]["voicegenids"]));
+    const server = client.guilds.cache.get(fileContentsjson_C[i]["guildid"]);
+    temp.push(Object.keys(fileContentsjson_C[i]["voicegenids"]));
     temp = temp.flat();
     for (let ids of temp) {
-      if (server.channels.cache.get(ids) === undefined)
+      if (server.channels.cache.get(ids) === undefined) {
         console.log(i + "  has been yeeted");
-      delete fileContentsjsoncontents_C[i]["voicegenids"][ids];
+        delete fileContentsjson_C[i]["voicegenids"][ids];
+      }
       // add a method to delete a node and update other variables
     }
   }
-  fs.writeFile(
-    path,
-    JSON.stringify(fileContentsjsoncontents_C),
-    function (err) {
-      if (err) throw err;
-      console.log("File is updated.");
-    }
-  );
-  e;
+  fs.writeFile(path, JSON.stringify(fileContentsjson_C), function (err) {
+    if (err) throw err;
+    console.log("File is updated.");
+  });
 }
 
 let namedata = [];
@@ -213,7 +211,7 @@ client.on("message", async (msg) => {
                 .send(
                   client.channels.cache.get(args[1]).name + "  has been added "
                 );
-              fs.readFile("./id.json", "utf8", (err, fileContents) => {
+              fs.readFile(path, "utf8", (err, fileContents) => {
                 if (err) {
                   console.error(err);
                   return;
@@ -221,7 +219,7 @@ client.on("message", async (msg) => {
                 try {
                   var data = JSON.parse(fileContents); // this data contains id from file
                   dat = Object.assign(data, dict); //merging the prev data from file and the data from user
-                  fs.writeFile("id.json", JSON.stringify(dat), (err) => {
+                  fs.writeFile(path, JSON.stringify(dat), (err) => {
                     //writing the merged data to the same file
                     if (err) throw err;
                     console.log(" Written"); // Success
