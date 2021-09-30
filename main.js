@@ -3,6 +3,7 @@ const client = new Discord.Client();
 const { token } = require("./config.json");
 const { orderBy } = require("natural-orderby");
 const fs = require("fs");
+const path = "./id.json";
 
 class Node {
   // constructor
@@ -83,7 +84,7 @@ class LinkedList {
 }
 let Check_flag = 1; //flag for init data only once need new method
 let ll = new LinkedList();
-let id_json_data;
+let fileContentsjson;
 let id_keys = []; //keys pushed here are from the parent vc and cant be deleted
 let id_name = []; //names pushed here are from the parent vc and cant be changed , used to generate the nameset during init
 let activebag_names = []; // this array hold the list of names which are created and is visible to the user
@@ -92,24 +93,45 @@ const prefix = "!";
 var dict = {}; //for reading the input
 
 //inits data from file  only happens once during startup
-let init = function () {
-  if (Check_flag) {
-    id_json_data = fs.readFileSync("./id.json", "utf8", (err, fileContents) => {
-      return fileContents;
-    });
-    id_json_data = JSON.parse(id_json_data); //string data is converted to JSON OBJS
-    id_keys = Object.keys(id_json_data); //keys are extractedd
-    for (let id of id_keys) {
-      activebag_id.push(id);
-      id_name.push(client.channels.cache.get(id).name); // assigns the channel names to the id_name list
+function init() {
+  if (fs.existsSync(path)) {
+    if (Check_flag) {
+      let filereader = fs.readFileSync(path, "utf8", (err, fileContents) => {
+        return fileContents;
+      });
+      fileContentsjson = JSON.parse(filereader); //string data is converted to JSON OBJS
+      let svrnames = Object.keys(fileContentsjson); // svr names are extracted
+      for (let i of svrnames) {
+        //keys are extractedd
+        id_keys.push(Object.keys(fileContentsjson[i]["voicegenids"]));
+      }
+      id_keys = id_keys.flat();
+      for (let id of id_keys) {
+        activebag_id.push(id);
+        id_name.push(client.channels.cache.get(id).name); // assigns the channel names to the id_name list
+      }
+      for (var i = 0; i < id_keys.length; i++)
+        ll.add(id_name[i], id_keys[i], id_json_data[id_keys[i]]); //creates a linked list (of array) to store the names availabe for setting the vc name
+      //ll.prnt() to display the initialized nodes
     }
-    for (var i = 0; i < id_keys.length; i++)
-      ll.add(id_name[i], id_keys[i], id_json_data[id_keys[i]]); //creates a linked list (of array) to store the names availabe for setting the vc name
-    //ll.prnt() to display the initialized nodes
+    Check_flag = false;
+    ll.prnt();
+  } else {
+    var init = {
+      "bot testing": {
+        guildid: "875028803464863784",
+        voicegenids: {
+          "885261078408331345": "875028803464863786",
+          "875331035112566804": "875292443917037610",
+        },
+      },
+    };
+    fs.writeFile(path, JSON.stringify(init), function (err) {
+      if (err) throw err;
+      console.log("File is created successfully.");
+    });
   }
-  Check_flag = false;
-  ll.prnt();
-};
+}
 // checks if the vc's ids are valid this should be  performed whenever the voicestateupdate is called and inits data
 function check() {
   console.log("checking");
@@ -141,7 +163,6 @@ function check() {
 let namedata = [];
 client.on("ready", async () => {
   console.log("ready called");
-  check();
   init();
   client.user.setPresence({
     activity: {
