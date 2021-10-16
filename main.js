@@ -262,7 +262,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
         if (activebag_id.includes(newChannelId)) {
           var channel_name_temp = client.channels.cache
             .get(newChannelId)
-            .name.replace(/[0-9]/g, ""); //gets the name only string ignores numbers
+            .name.replace(/\s\d|\s\d\d/g, ""); //gets the name only string ignores numbers
           pcidd = ll.returnpcid(channel_name_temp); //parentcategoryid
           namedata = ll.returnlist(channel_name_temp); //namedata
           namedata = orderBy(namedata); //sorts it
@@ -287,7 +287,7 @@ client.on("voiceStateUpdate", async (oldVoiceState, newVoiceState) => {
     ) {
       var channel_name_temp = client.channels.cache
         .get(oldChannelId)
-        .name.replace(/[0-9]/g, "");
+        .name.replace(/\s\d|\s\d\d/g, "");
       var channel_name_temp_ins = client.channels.cache.get(oldChannelId).name;
       namedata = ll.returnlist(channel_name_temp);
       namedata.push(channel_name_temp_ins);
