@@ -3,7 +3,23 @@ const client = new Discord.Client();
 const { token } = require("./config.json");
 const pvtvc = require("./pvtvcgen.js");
 const prefix = "!";
+const path = "./di.json";
+const fs = require("fs");
+function check() {
+  console.log("checking");
+  if (fs.existsSync(path)) {
+    // path exists
+    console.log("exists:", path);
+  } else {
+    var dict = { discordsvrnames: ["guildname", "guildid", "voicegenids"] };
+
+    client.guilds.cache.forEach((guild) => {
+      console.log(`${guild.name} | ${guild.id}`);
+    });
+  }
+}
 client.on("ready", async () => {
+  check();
   console.log("ready called");
   client.user.setPresence({
     activity: {
