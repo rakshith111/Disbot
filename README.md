@@ -2,7 +2,11 @@
 #### A multi purpose bot with more features coming soon
 ## Requirements 
 `natural-orderby <=2.0.3` <br>
-`npm install natural-orderby --save`
+<h4><details>
+  <summary>How to install </summary>
+  <br> <code> npm install natural-orderby --save</code><br>
+</details></h4>
+
 # Main features currently availabe 
 
 ### 1)Temporary Voice channel creator 
